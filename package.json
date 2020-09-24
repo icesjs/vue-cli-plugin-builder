@@ -1,0 +1,152 @@
+{
+  "name": "@ices/vue-cli-plugin-builder",
+  "version": "0.0.0-development",
+  "description": "A Vue CLI plugin, based on Vue CLI API to extend plug-in services and commands, and provide building capabilities as services.",
+  "main": "index.js",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --config .prettierrc.js -w './!(coverage)/**/*.js'",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "coverage:view": "open-cli coverage/lcov-report/index.html",
+    "release": "semantic-release"
+  },
+  "author": {
+    "name": "Stone",
+    "email": "star2018@outlook.com",
+    "url": "https://github.com/icesjs"
+  },
+  "license": "MIT",
+  "keywords": [
+    "vue,cli,build"
+  ],
+  "homepage": "https://github.com/icesjs/vue-cli-plugin-builder",
+  "bugs": {
+    "url": "https://github.com/icesjs/vue-cli-plugin-builder/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/icesjs/vue-cli-plugin-builder.git"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@vue/cli-service": "^4.5.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/commit-analyzer": "^8.0.1",
+    "@semantic-release/git": "^9.0.0",
+    "@semantic-release/github": "^7.1.1",
+    "@semantic-release/npm": "^7.0.6",
+    "@semantic-release/release-notes-generator": "^9.0.1",
+    "babel-eslint": "^10.1.0",
+    "@babel/preset-env": "^7.11.5",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^7.9.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-jest": "^24.0.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-security": "^1.4.0",
+    "eslint-plugin-standard": "^4.0.0",
+    "husky": "^4.3.0",
+    "jest": "^26.4.2",
+    "lint-staged": "^10.4.0",
+    "open-cli": "^6.0.1",
+    "prettier": "^2.1.2",
+    "semantic-release": "^17.1.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true,
+    "notify": true,
+    "collectCoverage": true,
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    },
+    "testPathIgnorePatterns": [
+      "/__tests__/.*/__fixtures__/.*"
+    ],
+    "collectCoverageFrom": [
+      "index.js",
+      "src/**/*.js"
+    ],
+    "testMatch": [
+      "**/*.test.js"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged",
+      "post-merge": "npm install",
+      "pre-push": "npm run lint:fix"
+    }
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "npm run lint:fix"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "release": {
+    "branches": [
+      "master"
+    ],
+    "analyzeCommits": {
+      "preset": "eslint",
+      "releaseRules": [
+        {
+          "tag": "Docs",
+          "message": "*README*",
+          "release": "patch"
+        },
+        {
+          "tag": "New",
+          "release": "patch"
+        }
+      ]
+    },
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogFile": "CHANGELOG.md"
+        }
+      ],
+      "@semantic-release/npm",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "CHANGELOG.md"
+          ]
+        }
+      ],
+      "@semantic-release/github"
+    ]
+  },
+  "files": [
+    "src"
+  ]
+}
