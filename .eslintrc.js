@@ -1,11 +1,11 @@
 module.exports = {
   root: true,
   env: {
+    es2021: true,
     node: true,
-    es6: true,
     jest: true,
   },
-  plugins: ['standard', 'security', 'jest', 'prettier'],
+  plugins: ['standard', 'jest', 'prettier'],
   extends: [
     'standard',
     'plugin:node/recommended',
@@ -14,30 +14,18 @@ module.exports = {
   rules: {
     'no-process-exit': 'warn',
     'jest/no-disabled-tests': 'error',
-    'jest/no-focused-tests': 'error',
+    'jest/no-focused-tests': 'warn',
     'jest/no-identical-title': 'error',
     'node/no-unsupported-features': 'off',
     'node/no-unpublished-require': 'off',
-    'security/detect-non-literal-fs-filename': 'error',
-    'security/detect-unsafe-regex': 'error',
-    'security/detect-buffer-noassert': 'error',
-    'security/detect-child-process': 'error',
-    'security/detect-disable-mustache-escape': 'error',
-    'security/detect-eval-with-expression': 'error',
-    'security/detect-no-csrf-before-method-override': 'error',
-    'security/detect-non-literal-regexp': 'error',
-    'security/detect-object-injection': 'warn',
-    'security/detect-possible-timing-attacks': 'error',
-    'security/detect-pseudoRandomBytes': 'error',
     'space-before-function-paren': 'off',
     'object-curly-spacing': 'off',
   },
   parser: 'babel-eslint',
   parserOptions: {
-    ecmaVersion: 2020,
     ecmaFeatures: {
       impliedStrict: true,
     },
   },
-  ignorePatterns: ['coverage/**'],
+  ignorePatterns: ['dist/**', 'coverage/**', '__mocks__/**'],
 }

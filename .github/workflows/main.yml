@@ -1,42 +1,41 @@
 name: CI
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   build:
     strategy:
       matrix:
-        platform: [ubuntu-latest]
-        node: ['12', '14']
-    name: Node ${{ matrix.node }} (${{ matrix.platform }})
+        platform: [ ubuntu-latest ]
+        node-version: [ '10.x', '12.x', '14.x' ]
+    name: Use Node.js ${{ matrix.node-version }}
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.node-version }}
       - name: install dependencies
-        run: yarn install --frozen-lockfile
-      - name: lint code
-        run: npm run lint
+        run: npm install
       - name: run tests
-        run: npm run test
+        run: npm run test:install && npm run test:all
       - name: get code coverage report
         run: npx codecov
         env:
           CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
+          CI: true
 
   release:
     name: do semantic release
     runs-on: 'ubuntu-latest'
     needs: build
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
           node-version: '12'
       - name: install dependencies
-        run: yarn install --frozen-lockfile --ignore-engines
+        run: npm install
       - name: release
         run: npm run semantic-release
         env:
