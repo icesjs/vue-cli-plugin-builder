@@ -1,4 +1,4 @@
-name: CI
+name: Build And Publish
 
 on: [ push, pull_request ]
 
@@ -17,8 +17,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: install dependencies
         run: npm install
+      - name: install dependencies for mock project
+        run: npm run test:install
+        env:
+          CI: true
       - name: run tests
-        run: npm run test:install && npm run test:all
+        run: npm run test:all
+        env:
+          CI: true
       - name: get code coverage report
         run: npx codecov
         env:
