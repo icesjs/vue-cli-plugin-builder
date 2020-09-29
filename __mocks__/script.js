@@ -134,7 +134,7 @@ async function runTest(dir, cmd, args) {
     throw new Error(`The path is not an existed project. (${dir})`)
   }
   console.log(
-    `${chalk.yellow('Running test in')} ${chalk.cyan(dir)} ${chalk.yellow(
+    `${chalk.yellow('Running tests in')} ${chalk.cyan(dir)} ${chalk.yellow(
       'with'
     )} ${chalk.cyan(cmd)} command`
   )
@@ -169,7 +169,8 @@ async function runTest(dir, cmd, args) {
     process.exit(1)
   }
   // 已经存在CI环境声明情况下，优先保证该环境变量的有效性
-  if ((process.env.CI = CI || parsed.CI)) {
+  if (CI || parsed.CI) {
+    process.env.CI = CI || parsed.CI
     console.log(chalk.yellow('Running in CI environment'))
   }
 

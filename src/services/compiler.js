@@ -8,10 +8,6 @@ const { EVENT_COMPILE_DONE, PLUGIN_COMPILER_EVENT } = require('../constants')
 module.exports = class CompilerService extends Service {
   init(context) {
     this.context = context
-    if ((this.hasIpcChannel = typeof process.send === 'function')) {
-      process.on('message', this.onMessageEvent.bind(this))
-    }
-
     return true
   }
 
@@ -33,9 +29,9 @@ module.exports = class CompilerService extends Service {
   // 编译完成事件
   async done(stats) {
     const code = stats.hasErrors() ? 1 : 0
-    this.emit(EVENT_COMPILE_DONE, code)
+    this.context.emitter.emit(EVENT_COMPILE_DONE, code)
     // 如果存在IPC通道，则向父进程发送编译完成消息
-    if (this.hasIpcChannel) {
+    if (typeof process.send === 'function') {
       process.send({
         type: EVENT_COMPILE_DONE,
         data: code,

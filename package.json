@@ -87,7 +87,13 @@
     "extends": [
       "@commitlint/config-conventional"
     ],
-    "rules": {}
+    "rules": {
+      "body-max-line-length": [
+        2,
+        "always",
+        150
+      ]
+    }
   },
   "lint-staged": {
     "**/*.js": [
