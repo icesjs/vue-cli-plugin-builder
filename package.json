@@ -1,6 +1,6 @@
 {
   "name": "@ices/vue-cli-plugin-builder",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A Vue CLI plugin, provide building capabilities as services.",
   "main": "dist/index.js",
   "engines": {
