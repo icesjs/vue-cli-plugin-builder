@@ -5,6 +5,7 @@ const execa = require('execa')
 const { promisify } = require('util')
 const rimraf = promisify(require('rimraf'))
 const { loadEnv, getProcessArgs } = require('@ices/shared-utils-node')
+const { EVENT_COMPILE_DONE } = require('../src/constants')
 
 // 为简化配置，所有子进程执行配置参数都通过这个变量来指定
 // 一般只需要通过该变量变更cwd属性到需要执行测试的模拟工程目录即可
@@ -24,7 +25,9 @@ function execScript(file, argv, listener) {
   subProcess.stdout.pipe(process.stdout)
   subProcess.stderr.pipe(process.stderr)
   if (typeof listener === 'function') {
-    subProcess.on('message', listener.bind(undefined, subProcess))
+    subProcess.on('message', (message, handle) => {
+      listener(message, subProcess, handle)
+    })
   }
   return subProcess
 }
@@ -139,17 +142,34 @@ async function runTest(dir, cmd, args) {
   // VUE_CLI_TEST 环境变量，可改变Vue Cli的部分执行逻辑，以适应测试需要
   process.env.VUE_CLI_TEST = process.env.CI ? 'test' : ''
   // 运行构建命令
-  await execVueCommand(cmd, args)
+  await execVueCommand(cmd, args, ({ type, data }, subProcess) => {
+    if (process.env.CI && cmd !== 'build' && type === EVENT_COMPILE_DONE) {
+      // 在CI环境下，运行非产品构建任务，由于构建层有监听服务提供，构建完成后不会结束进程
+      // 这里通过监听子进程消息事件，来手动杀掉已经编译结束的测试进程
+      if (!data) {
+        // 传值为0，表示构建成功
+        subProcess.cancel()
+      }
+    }
+  }).catch((err) => {
+    if (!err.isCanceled) {
+      // 如果不是主动取消（杀掉）的进程，抛出异常
+      throw err
+    }
+  })
 }
 
 ;(async () => {
+  // 如果CI环境变量已经设置值，则是由其他构建环境设定
+  const CI = process.env.CI
   // 加载测试环境变量，这里使用的是覆盖模式
-  const { error } = loadEnv(path.join(__dirname, '../.env.test'), true)
+  const { error, parsed } = loadEnv(path.join(__dirname, '../.env.test'), true)
   if (error) {
     console.error(error)
     process.exit(1)
   }
-  if (process.env.CI) {
+  // 已经存在CI环境声明情况下，优先保证该环境变量的有效性
+  if ((process.env.CI = CI || parsed.CI)) {
     console.log(chalk.yellow('Running in CI environment'))
   }
 

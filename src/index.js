@@ -7,13 +7,13 @@ function service(api, options) {
   // 实例化构建器
   const builder = new Builder({ api, options })
   // 先注册插件命令
-  builder._registerCommands()
+  builder.registerCommands()
 
   // 如果当前执行的命令是help，就不再执行其他服务加载了
   const {
     command,
     args: { help, h },
-  } = builder.getDefaultContext()
+  } = builder.defaultContext
 
   // 执行的是“帮助”命令时，就不进行服务注册了
   if (!command || help || h) {
@@ -21,15 +21,15 @@ function service(api, options) {
   }
   // 加载插件与服务
   // 要先执行插件加载
-  builder._registerPlugins()
+  builder.registerPlugins()
   // 加载服务
-  builder._registerServices()
+  builder.registerServices()
   // 打印命令、插件和服务信息到终端
-  builder._echo()
+  builder.echo()
 }
 
 // 装载命令脚本
 // defaultModes用于导出构建命令的默认构建模式
-Builder._loadCommands((service.defaultModes = {}))
+Builder.loadCommands((service.defaultModes = {}))
 
 module.exports = service
