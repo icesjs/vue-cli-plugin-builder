@@ -17,7 +17,7 @@
     "test:all": "npm run build && jest --passWithNoTests",
     "test:install": "node ./__mocks__/script.js -- install ",
     "build": "babel src -d dist -s inline",
-    "commit:cz": "git diff --quiet && git-cz || echo 'Working dir must be clean, please stage your changes first.\n' && exit 1",
+    "commit:cz": "git diff --quiet && git-cz || (echo 'Error: Working dir must be clean, please stage your changes first.\n' && exit 1)",
     "semantic-release": "rimraf dist && npm run build && semantic-release"
   },
   "author": {
