@@ -1,5 +1,3 @@
-'use strict'
-
 const Builder = require('./builder')
 
 // Vue CLI 插件服务
@@ -13,7 +11,7 @@ function service(api, options) {
   const {
     command,
     args: { help, h },
-  } = builder.defaultContext
+  } = builder.cliArgs
 
   // 执行的是“帮助”命令时，就不进行服务注册了
   if (!command || help || h) {
@@ -28,7 +26,7 @@ function service(api, options) {
   builder.echo()
 }
 
-// 装载命令脚本
+// 装载命令模块
 // defaultModes用于导出构建命令的默认构建模式
 Builder.loadCommands((service.defaultModes = {}))
 
