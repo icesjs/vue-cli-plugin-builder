@@ -3,7 +3,7 @@ module.exports = {
     [
       '@babel/preset-env',
       {
-        targets: 'node 8.3.0', // 最低支持node8.3以上环境
+        targets: 'node 8.3', // 最低支持node8.3环境
         modules: 'cjs', // 转换为cjs模块
         useBuiltIns: 'usage', // 根据target按需引入polyfill
         corejs: {

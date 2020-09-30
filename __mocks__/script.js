@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 const execa = require('execa')
+const resolve = require('resolve')
 const { promisify } = require('util')
 const rimraf = promisify(require('rimraf'))
 const { loadEnv, getProcessArgs } = require('@ices/shared-utils-node')
@@ -18,7 +19,7 @@ const execSetup = { windowsHide: true }
 function execScript(file, argv, listener) {
   execSetup.localDir = execSetup.cwd
   const subProcess = execa.node(
-    path.join(execSetup.cwd, file),
+    path.isAbsolute(file) ? file : path.join(execSetup.cwd, file),
     argv || [],
     execSetup
   )
@@ -57,7 +58,26 @@ function execVueCommand(name, args, listener) {
     args.push('--open')
   }
 
-  return execScript(`./node_modules/.bin/vue-cli-service`, args, listener)
+  // 查找vue-cli-service执行入口
+  let exePath
+  try {
+    resolve.sync('@vue/cli-service', {
+      basedir: execSetup.cwd,
+      packageFilter(pkg, file) {
+        path.basename(file) === 'package.json' ? path.dirname(file) : file
+        exePath = path.join(
+          path.basename(file) === 'package.json' ? path.dirname(file) : file,
+          typeof pkg.bin === 'string' ? pkg.bin : pkg.bin['vue-cli-service']
+        )
+        return pkg
+      },
+    })
+  } catch (e) {}
+  if (!exePath) {
+    throw chalk.red('Can not find vue-cli-service')
+  }
+
+  return execScript(exePath, args, listener)
 }
 
 // 命令行执行器
