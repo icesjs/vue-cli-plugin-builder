@@ -1,5 +1,8 @@
 const Service = require('../service')
-const { EVENT_COMPILE_DONE, PLUGIN_COMPILER_EVENT } = require('../constants')
+const {
+  EVENT_COMPILE_DONE,
+  PLUGIN_NAME_COMPILER_EVENT,
+} = require('../constants')
 
 /**
  * 编译器相关的服务
@@ -14,10 +17,10 @@ module.exports = class CompilerService extends Service {
   // 配置webpack
   chainWebpack(conf) {
     conf
-      .plugin(PLUGIN_COMPILER_EVENT)
+      .plugin(PLUGIN_NAME_COMPILER_EVENT)
       .use(require.resolve('../plugins/webpack/CompilerEvent'), [
         {
-          name: PLUGIN_COMPILER_EVENT,
+          name: PLUGIN_NAME_COMPILER_EVENT,
           context: this,
           events: {
             done: this.done,
