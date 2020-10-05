@@ -64,7 +64,6 @@ function execVueCommand(name, args, listener) {
     resolve.sync('@vue/cli-service', {
       basedir: execSetup.cwd,
       packageFilter(pkg, file) {
-        path.basename(file) === 'package.json' ? path.dirname(file) : file
         exePath = path.join(
           path.basename(file) === 'package.json' ? path.dirname(file) : file,
           typeof pkg.bin === 'string' ? pkg.bin : pkg.bin['vue-cli-service']

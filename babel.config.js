@@ -21,6 +21,7 @@ module.exports = {
         helpers: true, // 进行helpers抽取
         corejs: false, // 不需要引入polyfill，已由env插件处理
         regenerator: false, // 不需要处理生成器函数
+        version: require('@babel/runtime/package.json').version, // babel需要知道最新依赖的版本信息
       },
     ],
   ],
